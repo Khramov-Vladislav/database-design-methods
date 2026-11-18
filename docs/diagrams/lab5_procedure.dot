@@ -1,0 +1,22 @@
+digraph register_settlement {
+  graph [rankdir=TB, bgcolor="white", pad="0.2", nodesep="0.3", ranksep="0.35", fontname="Arial"];
+  node [fontname="Arial", fontsize=10, color="#555555", style="rounded,filled", fillcolor="#f7f7f7", margin="0.16,0.10"];
+  edge [fontname="Arial", fontsize=9, color="#555555", arrowsize=0.7];
+  start [shape=oval, label="Начало"];
+  input [shape=parallelogram, label="Получить атрибуты студента, сотрудника,\nздания, комнаты, заселения и платежа"];
+  find [shape=box, label="Поиск студента, сотрудника, здания,\nтипа комнаты, комнаты, места и способа оплаты"];
+  exists [shape=diamond, label="Найдена очередная\nсущность?"];
+  add [shape=box, label="Добавить отсутствующую\nсущность и получить ее ID"];
+  more [shape=diamond, label="Остались сущности\nдля проверки?"];
+  settlement [shape=box, label="Добавить заселение\nс найденными ID"];
+  payment [shape=box, label="Добавить связанный платеж"];
+  view [shape=box, label="View показывает обновленные\nсчетчики заселений и платежей"];
+  end [shape=oval, label="Конец"];
+  start -> input -> find -> exists;
+  exists -> more [label="да"];
+  exists -> add [label="нет"];
+  add -> more;
+  more -> find [label="да", constraint=false];
+  more -> settlement [label="нет"];
+  settlement -> payment -> view -> end;
+}

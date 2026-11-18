@@ -43,3 +43,6 @@ build/
 
 # LaTeX Workshop
 *.bak
+
+# Резервные файлы draw.io
+*.bkp
