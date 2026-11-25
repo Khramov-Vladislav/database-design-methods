@@ -17,31 +17,49 @@
 \end{enumerate}
 
 \subsubsection{Создание функции}
-В таблицах \texttt{student} и \texttt{employee} фамилия, имя и отчество хранятся в отдельных полях. Для формирования краткой записи ФИО создана функция \texttt{format\_full\_name}. Функция принимает три значения, удаляет пробелы по краям и добавляет к первым буквам имени и отчества точки. Если отчество не задано, функция возвращает только фамилию и инициал имени.
+В таблицах \texttt{student} и \texttt{employee} фамилия, имя и отчество хранятся в отдельных полях. Для формирования краткой записи ФИО создана функция \texttt{format\_full\_name}. Она удаляет пробелы по краям входных значений и при наличии отчества возвращает фамилию и два инициала с точками. Если отчество отсутствует, функция выводит фамилию и инициал имени без точки.
 
-Исходный текст функции приведён в листинге~\ref{lst:appendix-function}. Запросы для вывода трех исходных атрибутов вместе с результатом приведены в листинге~\ref{lst:lab5-name}.
+Исходный текст функции приведён в листинге~\ref{lst:appendix-function}. Для проверки в одну выборку включены три записи с отчеством и три демонстрационные записи, в которых поле \texttt{middle\_name} содержит \texttt{NULL}. Запрос передаёт в функцию значения полей из каждой строки и выводит результат рядом с исходными данными (листинг~\ref{lst:lab5-name}).
 
-\begin{lstlisting}[language=SQL, caption={Запросы для проверки форматирование ФИО}, label={lst:lab5-name}]
+\begin{lstlisting}[language=SQL, columns=fullflexible, caption={Запрос для сравнения результатов форматирования ФИО}, label={lst:lab5-name}]
+WITH students_with_middle AS (
+    SELECT student_id, last_name, first_name, middle_name
+    FROM student
+    WHERE NULLIF(btrim(middle_name), '') IS NOT NULL
+    ORDER BY student_id
+    LIMIT 3
+),
+sample AS (
+    SELECT student_id, last_name, first_name, middle_name
+    FROM students_with_middle
+
+    UNION ALL
+
+    SELECT student_id, last_name, first_name, middle_name
+    FROM student
+    WHERE passport_data IN ('LAB5NO001', 'LAB5NO002', 'LAB5NO003')
+      AND middle_name IS NULL
+)
 SELECT
+    student_id,
     last_name,
     first_name,
     middle_name,
     format_full_name(last_name, first_name, middle_name) AS formatted_name
-FROM student
-ORDER BY student_id
-LIMIT 15;
-
-SELECT format_full_name('Predovic', 'Anastasia', NULL) AS name_without_middle;
+FROM sample
+ORDER BY last_name, first_name, middle_name NULLS LAST, student_id;
 \end{lstlisting}
 
-Для студента \texttt{Predovic Anastasia Christiana} функция возвращает \texttt{Predovic A. C.}. Если отчество не задано, результатом будет \texttt{Predovic A}. Фактический вывод для 15 студентов и проверка варианта без отчества представлены на рисунке~\ref{fig:lab5-name-result}.
+\begin{samepage}
+На рисунке~\ref{fig:lab5-name-result} две записи с одинаковыми фамилией и именем \texttt{Predovic Anastasia} расположены рядом. Для записи с отчеством \texttt{Christiana} получено \texttt{Predovic A. C.}, а для записи со значением \texttt{NULL} в поле отчества --- \texttt{Predovic A}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/lab5_user_name_result.png}
-    \caption{Результат форматирования ФИО студентов из базы данных}
+    \includegraphics[width=\textwidth]{figures/lab5_user_name_comparison.png}
+    \caption{Результаты форматирования ФИО с отчеством и без него}
     \label{fig:lab5-name-result}
 \end{figure}
+\end{samepage}
 
 \subsubsection{Блок-схема процедуры}
 Процедура регистрирует заселение студента и связанный с ним платёж. Помимо данных студента передаются сведения о сотруднике, здании, типе комнаты, этаже, датах, способе оплаты и сумме. Перед добавлением записей процедура проверяет наличие каждой сущности по переданным атрибутам. Блок-схема алгоритма приведена на рисунке~\ref{fig:lab5-procedure}.
