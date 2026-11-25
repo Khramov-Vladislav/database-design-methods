@@ -1,0 +1,35 @@
+\begingroup
+\setstretch{1}
+\lstset{%
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    columns=fullflexible,
+    breakatwhitespace=true,
+    xleftmargin=2em,
+    xrightmargin=0.5em,
+    framexleftmargin=0.5em
+}
+
+\phantomsection%
+\section*{Приложение А. Исходный текст функции}
+\addcontentsline{toc}{section}{Приложение А. Исходный текст функции}
+
+\lstinputlisting[
+    firstline=1,
+    lastline=27,
+    caption={Функция \texttt{format\_full\_name}},
+    label={lst:appendix-function}
+]{../queries/lab5_functions/procedure.sql}
+
+\clearpage
+\phantomsection%
+\section*{Приложение Б. Исходный текст процедуры}
+\addcontentsline{toc}{section}{Приложение Б. Исходный текст процедуры}
+
+\lstinputlisting[
+    firstline=29,
+    firstnumber=1,
+    caption={Процедура \texttt{register\_settlement}},
+    label={lst:appendix-procedure}
+]{../queries/lab5_functions/procedure.sql}
+\endgroup
