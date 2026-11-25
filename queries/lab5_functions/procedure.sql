@@ -13,11 +13,7 @@ AS $$
         NULLIF(btrim(p_last_name), ''),
         CASE
             WHEN NULLIF(btrim(p_first_name), '') IS NOT NULL
-            THEN upper(left(btrim(p_first_name), 1)) ||
-                 CASE
-                     WHEN NULLIF(btrim(p_middle_name), '') IS NOT NULL THEN '.'
-                     ELSE ''
-                 END
+            THEN upper(left(btrim(p_first_name), 1)) || '.'
         END,
         CASE
             WHEN NULLIF(btrim(p_middle_name), '') IS NOT NULL
